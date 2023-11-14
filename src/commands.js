@@ -1,22 +1,31 @@
-import yargs from 'yargs';
-import { hideBin } from 'yargs/helpers';
-import { getToken } from './auth.js';
-import { getPlaybackState, togglePlayback } from './playback.js';
+import yargs from 'yargs'
+import { hideBin } from 'yargs/helpers'
+import { getPlaybackState, startPlayback } from './playback.js'
+import { getAvailableDevices } from './devices.js'
+import 'dotenv/config'
+// import { getToken } from './auth.js'
 // import { getPlaylistByName } from './playlists.js';
 // import { getTrack } from './tracks.js';r
 
+let access_token = process.env.TOKEN
+let device_id = process.env.DEVICE_ID
+
 yargs(hideBin(process.argv))
   .command(
-    'login',
-    'login into spotify',
+    'play',
+    'start playback',
     () => {},
     async () => {
-      getToken().then((response) => {
-        console.log(response);
-        // getTrackInfo(response.access_token).then((profile) => {
-        //   console.log(profile);
-        // });
-      });
+      return await startPlayback(access_token, device_id)
+    }
+  )
+  .command(
+    'devices',
+    'see a list of available devices',
+    () => {},
+    async () => {
+      const devices = await getAvailableDevices(access_token)
+      console.log(devices)
     }
   )
   .command(
@@ -26,11 +35,11 @@ yargs(hideBin(process.argv))
       return yargs.positional('playlist', {
         describe: 'The playlist you want to shuffle',
         type: 'string',
-      });
+      })
     },
     async (argv) => {
-      const playbackState = await getPlaybackState('');
-      console.log(playbackState.json());
+      const playbackState = await getPlaybackState('')
+      console.log(playbackState.json())
       //   togglePlayback(
       //     ''
       //   ).then((res) => {
@@ -46,4 +55,4 @@ yargs(hideBin(process.argv))
     description: 'track to play first',
   })
   .demandCommand(1)
-  .parse();
+  .parse()
