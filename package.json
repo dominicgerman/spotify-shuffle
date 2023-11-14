@@ -1,0 +1,27 @@
+{
+  "name": "spotify-shuffle",
+  "version": "1.0.0",
+  "description": "A CLI for shuffling spotfiy playlists.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+  },
+  "bin": {
+    "spotify": "./index.js"
+  },
+  "keywords": [
+    "spotify"
+  ],
+  "author": "Dominic German",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "yargs": "^17.7.2",
+    "cookie-parser": "1.4.6",
+    "cors": "2.8.5",
+    "express": "4.18.2",
+    "querystring": "~0.2.0",
+    "request": "2.88.2"
+  }
+}
