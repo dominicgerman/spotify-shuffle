@@ -12,9 +12,16 @@ export async function saveDB(db) {
   return db;
 }
 
-// export const insert = async (data) => {
-//   const db = await getDB()
-//   db.notes.push(data)
-//   await saveDB(db)
-//   return data
-// }
+export async function insertPlaylists(data) {
+  const db = await getDB();
+  db.playlists = [...data];
+  await saveDB(db);
+  return data;
+}
+
+export async function insertDevices(data) {
+  const db = await getDB();
+  db.devices = [...data];
+  await saveDB(db);
+  return data;
+}

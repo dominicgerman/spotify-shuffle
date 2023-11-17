@@ -1,21 +1,43 @@
+import axios from 'axios';
+
 export async function getPlaybackState(access_token) {
   const response = await fetch('https://api.spotify.com/v1/me/player', {
     method: 'GET',
     headers: { Authorization: 'Bearer ' + access_token },
-  })
-  return await response.json()
+  });
+  return await response.json();
 }
 
-export async function startPlayback(access_token, device_id) {
-  const response = await fetch(`https://api.spotify.com/v1/me/player/play/`, {
+export async function getAvailableDevices(access_token) {
+  const response = await fetch('https://api.spotify.com/v1/me/player/devices', {
+    method: 'GET',
+    headers: { Authorization: 'Bearer ' + access_token },
+  });
+  return await response.json();
+}
+
+export async function startPlayback(access_token, options) {
+  const response = await axios(
+    `https://api.spotify.com/v1/me/player/play?device_id=${options.device_id}`,
+    {
+      method: 'PUT',
+      headers: {
+        Authorization: 'Bearer ' + access_token,
+      },
+      data: {
+        context_uri: options.context_uri,
+      },
+    }
+  );
+  if (response.status !== 204) console.log(response);
+}
+
+export async function stopPlayback(access_token) {
+  const response = await axios(`https://api.spotify.com/v1/me/player/pause/`, {
     method: 'PUT',
-    body: JSON.stringify({
-      context_uri: 'spotify:album:5ht7ItJgpBH7W6vJ5BqpPr',
-    }),
     headers: {
       Authorization: 'Bearer ' + access_token,
     },
-  })
-  const result = await response.json()
-  console.log(result)
+  });
+  if (response.status !== 204) console.log(response);
 }

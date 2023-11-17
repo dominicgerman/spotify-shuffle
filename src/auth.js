@@ -1,21 +1,14 @@
+import fs from 'node:fs/promises';
 import 'dotenv/config';
 
-const client_id = process.env.CLIENT_ID;
-const client_secret = process.env.CLIENT_SECRET;
+const CREDENTIALS_PATH = new URL('../credentials.json', import.meta.url);
 
-export async function getToken() {
-  const response = await fetch('https://accounts.spotify.com/api/token', {
-    method: 'POST',
-    body: new URLSearchParams({
-      grant_type: 'client_credentials',
-    }),
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      Authorization:
-        'Basic ' +
-        Buffer.from(client_id + ':' + client_secret).toString('base64'),
-    },
-  });
-
-  return await response.json();
+export async function getCredentials() {
+  const data = await fs.readFile(CREDENTIALS_PATH, 'utf-8');
+  const credentials = JSON.parse(data);
+  if (credentials.expiration > Date.now()) {
+    return credentials;
+  } else {
+    throw new Error('You need to re-authenticate');
+  }
 }

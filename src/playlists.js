@@ -12,3 +12,11 @@ export async function getPlaylistByName(name) {
     throw new Error(`No matches for ${name}`);
   }
 }
+
+export async function getAvailablePlaylists(access_token) {
+  const response = await fetch(`https://api.spotify.com/v1/me/playlists`, {
+    method: 'GET',
+    headers: { Authorization: 'Bearer ' + access_token },
+  });
+  return await response.json();
+}
