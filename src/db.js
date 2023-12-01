@@ -1,6 +1,4 @@
 import sqlite3 from 'sqlite3';
-import fs from 'node:fs/promises';
-import { getAvailablePlaylists } from './playlists.js';
 import { getAvailableDevices } from './playback.js';
 
 const DB_PATH = new URL('../data.db', import.meta.url).pathname;
@@ -32,7 +30,6 @@ export async function createCredentials(data) {
       await query(
         `INSERT INTO credentials(device_id, device_name, access_token, refresh_token, expires_in, expiration, scope, token_type) VALUES ("${devices[0].id}", "${devices[0].name}", "${data.access_token}","${data.refresh_token}",${data.expires_in},${data.expiration},"${data.scope}","${data.token_type}")`
       );
-      // await createPlaylistsIfEmpty();
     });
   } else {
     console.log('Updating!');
@@ -64,23 +61,4 @@ export async function getCredentials() {
     const credentials = await query(`SELECT * FROM credentials`);
     return credentials[0];
   }
-}
-// OLD SHIT
-
-// TODO - Move Devices and Credentials db stuff into sqlite
-// export async function getDB() {
-//   const db = await fs.readFile(DB_PATH, 'utf-8');
-//   return JSON.parse(db);
-// }
-
-export async function saveDB(db) {
-  await fs.writeFile(DB_PATH, JSON.stringify(db, null, 2));
-  return db;
-}
-
-export async function insertDevices(data) {
-  const db = await getDB();
-  db.devices = [...data];
-  await saveDB(db);
-  return data;
 }

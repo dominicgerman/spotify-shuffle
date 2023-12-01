@@ -2,12 +2,8 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { authenticate, startServer, stopServer } from './auth.js';
 import { getPlaylistByName } from './playlists.js';
-import {
-  startPlayback,
-  stopPlayback,
-  getAvailableDevices,
-} from './playback.js';
-import { getPlaylists, getCredentials, insertDevices } from './db.js';
+import { startPlayback, stopPlayback } from './playback.js';
+import { getPlaylists, getCredentials } from './db.js';
 import { getNextTracks, getTrackInfo } from './tracks.js';
 
 yargs(hideBin(process.argv))
@@ -35,7 +31,6 @@ yargs(hideBin(process.argv))
     () => {},
     async () => {
       await authenticate();
-      // await getCredentials();
     }
   )
   .command(
@@ -122,15 +117,6 @@ yargs(hideBin(process.argv))
       }
     }
   )
-  // .command(
-  //   'devices',
-  //   'see a list of available devices',
-  //   () => {},
-  //   async () => {
-  //     await createDevices();
-  //     await getCredentials();
-  //   }
-  // )
   .command(
     'playlists',
     'see a list of available playlists',

@@ -1,4 +1,3 @@
-import fs from 'node:fs/promises';
 import 'dotenv/config';
 import open from 'open';
 import { exec } from 'node:child_process';
@@ -35,13 +34,3 @@ export async function authenticate() {
   await open('http://localhost:8888/login');
   console.log('done logging in!');
 }
-
-// export async function getCredentials() {
-//   const data = await fs.readFile(CREDENTIALS_PATH, 'utf-8');
-//   const credentials = JSON.parse(data);
-//   if (credentials.expiration > Date.now()) {
-//     return credentials;
-//   } else {
-//     throw new Error('You need to re-authenticate');
-//   }
-// }
