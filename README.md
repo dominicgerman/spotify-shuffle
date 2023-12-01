@@ -22,6 +22,7 @@ I also wanted to practice building a command line tool (mostly) from scratch in 
 - `spotify playlists` will show you a list of your playlists.
 - `spotify shuffle <playlist>` starts playback of the playlist you want to shuffle.
 - `-t, --track <track_name>` is the option for passing in the song you want to play first.
+- `spotify exit` stops and deletes the background server
 
 Here's an example of shuffling a playlist called 'vibez' and starting with the song 'Eventualy':
 
