@@ -3,7 +3,6 @@ import axios from 'axios';
 import cors from 'cors';
 import 'dotenv/config';
 import querystring from 'node:querystring';
-// import fs from 'node:fs/promises';
 import { scopes } from '../spotify.config.js';
 import { createCredentials } from '../src/db.js';
 
@@ -11,8 +10,6 @@ const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REDIRECT_URI = `http://localhost:8888/callback`; // Your redirect uri
 const PORT = 8888;
-// const CREDENTIALS_PATH = new URL('../credentials.json', import.meta.url)
-// .pathname;
 
 const app = express();
 
@@ -60,9 +57,7 @@ app.get('/callback', async (req, res) => {
   );
   if (response.status === 200) {
     response.data.expiration = Date.now() + 3600000;
-    // console.log('response:', response.data);
     await createCredentials(response.data);
-    // await fs.writeFile(CREDENTIALS_PATH, JSON.stringify(response.data));
     res.send('<h1>Success! You can close this window now.</h1>');
   } else {
     console.log('ERROR:', response.status, response.statusText, response.data);

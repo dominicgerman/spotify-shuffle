@@ -19,37 +19,12 @@ const query = (command, method = 'all') => {
   });
 };
 
-// async function createPlaylistsIfEmpty() {
-//   const existingPlaylists = await getPlaylists();
-
-//   if (existingPlaylists?.length === 0) {
-//     const data = await getCredentials();
-//     console.log(data);
-//     const { items } = await getAvailablePlaylists(data.access_token);
-//     const tempDB = items.map((element) => {
-//       return {
-//         playlist_id: element.id,
-//         name: element.name,
-//         tracks_url: element.tracks.href,
-//       };
-//     });
-//     for (let i = 0; tempDB.length; i++) {
-//       const element = tempDB[i];
-//       await query(
-//         `INSERT INTO playlists(playlist_id, name, tracks_url) VALUES (${element.playlist_id},${element.name},${element.tracks_url})`,
-//         'all'
-//       );
-//     }
-//   }
-// }
-
 export async function createCredentials(data) {
   const { devices } = await getAvailableDevices(data.access_token);
   const existingCredentials = await getCredentials();
-  console.log('existingCredentials:', existingCredentials);
 
   if (!existingCredentials) {
-    console.log('Creating!');
+    console.log('Creating credentials!');
     db.serialize(async () => {
       await query(
         'CREATE TABLE IF NOT EXISTS credentials(device_id TEXT, device_name TEXT, access_token TEXT, refresh_token TEXT, expires_in INTEGER, expiration INTEGER, scope TEXT, token_type TEXT)'
@@ -87,7 +62,6 @@ export async function getCredentials() {
     return undefined;
   } else {
     const credentials = await query(`SELECT * FROM credentials`);
-    console.log(credentials);
     return credentials[0];
   }
 }

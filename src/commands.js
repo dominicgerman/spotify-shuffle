@@ -1,11 +1,6 @@
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import {
-  authenticate,
-  // getCredentials,
-  startServer,
-  stopServer,
-} from './auth.js';
+import { authenticate, startServer, stopServer } from './auth.js';
 import { getPlaylistByName } from './playlists.js';
 import {
   startPlayback,
@@ -13,7 +8,7 @@ import {
   getAvailableDevices,
 } from './playback.js';
 import { getPlaylists, getCredentials, insertDevices } from './db.js';
-import { getTrackInfo } from './tracks.js';
+import { getNextTracks, getTrackInfo } from './tracks.js';
 
 yargs(hideBin(process.argv))
   .command(
@@ -64,22 +59,34 @@ yargs(hideBin(process.argv))
       const data = await getCredentials();
       if (data.access_token) {
         const playlist = await getPlaylistByName(argv.playlist);
-        // const { devices } = await getAvailableDevices(data.access_token);
-        // const device = devices.filter((item) =>
-        //   item.name.includes('Dominic')
-        // )[0];
         const options = {
           context_uri: playlist ? `spotify:playlist:${playlist}` : null,
           track: argv.track ? argv.track : null,
           playlist_id: playlist ? playlist : null,
           device_id: data.device_id,
           access_token: data.access_token,
-          offset: {
-            uri: '',
-          },
+          offset: argv.track
+            ? {
+                uri: '',
+              }
+            : null,
         };
         if (argv.track) {
-          const { items } = await getTrackInfo(options);
+          const { items, next } = await getTrackInfo(options);
+          if (next) {
+            const { items: nextItems, next: nextUrl } = await getNextTracks(
+              data.access_token,
+              next
+            );
+            items.push(...nextItems);
+            if (nextUrl) {
+              const { items: lastItems } = await getNextTracks(
+                data.access_token,
+                nextUrl
+              );
+              items.push(...lastItems);
+            }
+          }
           const matches = items
             .map((item, i) => {
               return {
@@ -137,25 +144,3 @@ yargs(hideBin(process.argv))
   )
   .demandCommand(1)
   .parse();
-
-// .command(
-//   'shuffle <playlist>',
-//   'shuffle a playlist',
-//   (yargs) => {
-//     return yargs.positional('playlist', {
-//       describe: 'The playlist you want to shuffle',
-//       type: 'string',
-//     });
-//   },
-//   async (argv) => {
-//     const playbackState = await getPlaybackState('');
-//     console.log(playbackState.json());
-//     //   togglePlayback(
-//     //     ''
-//     //   ).then((res) => {
-//     //     console.log('res', res);
-//     //   });
-
-//     //   const track = argv.track ? await getTrack(argv.track) : 'poop';
-//   }
-// )

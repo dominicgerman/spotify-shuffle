@@ -3,13 +3,12 @@ import 'dotenv/config';
 import open from 'open';
 import { exec } from 'node:child_process';
 
-const CREDENTIALS_PATH = new URL('../credentials.json', import.meta.url)
-  .pathname;
+const PROJECT_PATH = new URL('../', import.meta.url).pathname;
 const SERVER_PATH = new URL('../server/app.js', import.meta.url).pathname;
 
 export async function startServer() {
   exec(
-    `pm2 start /Users/dominicgerman/Programming/projects/spotify-shuffle/server/app.js`,
+    `cd ${PROJECT_PATH} && pm2 start ${SERVER_PATH}`,
     (error, stdout, stderr) => {
       if (error) {
         console.error(`exec error: ${error}`);

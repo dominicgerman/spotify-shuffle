@@ -16,8 +16,7 @@ export async function getAvailableDevices(access_token) {
   return await response.json();
 }
 
-export async function startPlayback(access_token, options, offset) {
-  console.log(options);
+export async function startPlayback(access_token, options) {
   const response = await axios(
     `https://api.spotify.com/v1/me/player/play?device_id=${options.device_id}`,
     {
@@ -27,7 +26,7 @@ export async function startPlayback(access_token, options, offset) {
       },
       data: {
         context_uri: options.context_uri,
-        offset: { uri: options.offset.uri },
+        offset: options.offset ? { uri: options.offset.uri } : null,
       },
     }
   );
